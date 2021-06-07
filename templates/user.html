@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<p>username: {{ user.username }}</p>
+<p>email: {{ user.email }}</p>
+<br>
+<h3>Feedback by {{ user.first_name }}:</h3>
+{% for feedback in feedback_list %}
+    <h4>{{ feedback.title }}</h4>
+    <span>{{ feedback.content }}</span><br>
+    <b>feedback options:</b>
+    <form method="POST" action="/feedback/{{ feedback.id }}/delete">
+        <input type="submit" value="Delete">
+    </form>
+    <form method="GET" action="/feedback/{{ feedback.id }}/update">
+        <input type="submit" value="Update">
+    </form>
+{% endfor %}
+<br>
+<br>
+<br>
+<b>user options:</b>
+<form method="POST" action="/users/{{ user.username }}/delete">
+    <input type="submit" value="Delete User">
+</form>
+<form method="GET" action="/users/{{ user.username }}/feedback/add">
+    <input type="submit" value="Add Feedback">
+</form>
+{% endblock %}
