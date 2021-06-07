@@ -12,9 +12,6 @@ app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = "thisIsSecret"
 
 connect_db(app)
-# print(Feedback.query.delete())
-# print(User.query.delete())
-# db.session.commit()
 db.create_all()
 
 @app.route('/')
@@ -28,10 +25,8 @@ def register_user():
     """display the register_user.html page with a form for registering a user"""
     
     form = register()
-    # print(User.query.all())
-    # print(User.query.delete())
-    # db.session.commit()
     if request.method == 'GET':
+
         return render_template('register.html',
                                 title='Register an Account',
                                 form=form)
@@ -71,11 +66,12 @@ def login_user():
         if User.authenticate(username, password):
 
             user = User.query.filter_by(username=username).first()
-            print(user)
+
             session["user_id"] = user.username
 
             return redirect(f'/users/{username}')
         else:
+
             return redirect('/login')
 
 @app.route('/users/<username>')
@@ -83,8 +79,10 @@ def user_page(username):
     """display an html page with information about the chosen user"""
 
     if "user_id" not in session:
+
         raise Unauthorized()
     elif session["user_id"] is None:
+
         return render_template('base.html',
                                 title="User Has Been Deleted")
     else:
@@ -110,11 +108,14 @@ def clear_session():
 def delete_user(username):
     """delete a user"""
     if "user_id" not in session:
+
         raise Unauthorized()
     else:
+
         user = User.query.filter_by(username=username).first()
         feedback_list = Feedback.query.filter_by(username=username)
 
+        #delete all the feedback by the user
         for feedback in feedback_list:
             db.session.delete(feedback)
 
@@ -132,12 +133,16 @@ def add_feedback(username):
     feedback_form = feedback()
 
     if request.method == 'GET':
+
         if "user_id" not in session:
+
             raise Unauthorized()
         elif session["user_id"] is None:
+
             return render_template('base.html',
                                     title="User Has Been Deleted")
         else:
+
             url = f'/users/{username}/feedback/add'
             action = "Submit"
             return render_template('feedback.html',
@@ -172,7 +177,7 @@ def update_feedback(feedback_id):
                                 title="User Has Been Deleted")
     else:
         if request.method == 'GET':
-            
+
             url = f'/feedback/{feedback_id}/update'
             action = "Update"
             return render_template('feedback.html',

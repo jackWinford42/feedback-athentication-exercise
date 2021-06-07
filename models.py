@@ -1,6 +1,5 @@
 """Models for feedback."""
 from flask_sqlalchemy import SQLAlchemy
-#from SQLAlchemy import UniqueConstraint
 from flask_bcrypt import Bcrypt
 
 db = SQLAlchemy()
@@ -17,10 +16,7 @@ class Feedback(db.Model):
 
 class User(db.Model):
     __tablename__ = 'users'
-    # ___table_args__ = {
-    #     db.UniqueConstraint('username')
-    # }
-    # , unique=True, nullable=False
+
     username = db.Column(db.String(20), primary_key=True, unique=True)
     password = db.Column(db.Text, nullable=False)
     email =  db.Column(db.String(50), nullable=False)
@@ -28,6 +24,7 @@ class User(db.Model):
     last_name = db.Column(db.String(30), nullable=False)
     feedback_given = db.relationship('Feedback', backref='users', lazy=True)
 
+    #two class methods inspired by the demo code
     @classmethod
     def register(cls, username, password, email, first_name, last_name):
         """Register user with hashed password then return the user"""
@@ -45,10 +42,8 @@ class User(db.Model):
 
     @classmethod
     def authenticate(cls, username, password):
-        """Validate that user exists & password is correct.
-
-        Return True if valid; else return False.
-        """
+        """Validates that user exists and password is correct.
+        Return True if valid; else return False."""
 
         user = User.query.filter_by(username=username).first()
 
